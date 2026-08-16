@@ -185,6 +185,10 @@ cargo test
 - Registry cleanups and Wi-Fi forgets keep backups that History can restore.
 - "Factory Fresh" restores the earliest snapshot captured before a makeover session.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions, testing, and pull request guidelines.
+
 ## License
 
 Released under the [GNU GPL-3.0](LICENSE). See `THIRD_PARTY_NOTICES.md` for the
