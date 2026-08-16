@@ -40,7 +40,7 @@ impl Default for UpdateConfig {
         UpdateConfig {
             // releases/latest/download keeps the URL stable across releases
             // (the workflow tags are run numbers, not versions).
-            manifest_url: "https://github.com/vasilescualex07-droid/Reforged/releases/latest/download/latest.json".into(),
+            manifest_url: "https://github.com/vasilescualex07-droid/Reforge/releases/latest/download/latest.json".into(),
             check_on_startup: false,
         }
     }

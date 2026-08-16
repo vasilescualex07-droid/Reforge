@@ -8,12 +8,12 @@ Built with **Tauri 2 + Rust + React + TypeScript + Tailwind**.
 > Windows only (Windows 10 & 11). See `docs/PC-Makeover-Spec.md` for the technical spec.
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
-[![GitHub Release](https://img.shields.io/github/v/release/vasilescualex07-droid/Reforged)](https://github.com/vasilescualex07-droid/Reforged/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/vasilescualex07-droid/Reforge)](https://github.com/vasilescualex07-droid/Reforge/releases)
 
 ## Download & install
 
 Grab the latest `Reforge-Setup.exe` from the
-[Releases page](https://github.com/vasilescualex07-droid/Reforged/releases) — a per-user
+[Releases page](https://github.com/vasilescualex07-droid/Reforge/releases) — a per-user
 install, no admin rights needed. In-app, Settings → "Check for updates" polls the
 same channel and installs newer versions silently.
 
