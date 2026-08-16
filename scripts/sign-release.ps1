@@ -1,4 +1,4 @@
-# S12.2 — Sign the release artifacts with signtool.exe (Windows SDK).
+# S12.2  -  Sign the release artifacts with signtool.exe (Windows SDK).
 #
 # Dev usage:   powershell -ExecutionPolicy Bypass -File scripts/make-dev-cert.ps1
 #              $env:REFORGE_CERT_PFX = "C:\path\dev-cert.pfx"
@@ -27,7 +27,7 @@ if (-not $signtool) {
     $sdk = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Directory -ErrorAction SilentlyContinue |
         Sort-Object Name -Descending | Select-Object -First 1
     $candidate = Join-Path $sdk.FullName "x64\signtool.exe"
-    if (-not (Test-Path $candidate)) { throw "signtool.exe not found — install the Windows SDK (or run from a VS dev prompt)." }
+    if (-not (Test-Path $candidate)) { throw "signtool.exe not found  -  install the Windows SDK (or run from a VS dev prompt)." }
     $signtool = $candidate
 }
 $st = $signtool.Source -or $signtool
@@ -48,4 +48,4 @@ foreach ($t in $targets) {
 }
 
 Write-Host "==> All artifacts signed." -ForegroundColor Green
-Write-Host "NOTE: a self-signed dev cert will NOT clear SmartScreen (docs/DELIVERY.md §2)." -ForegroundColor Yellow
+Write-Host "NOTE: a self-signed dev cert will NOT clear SmartScreen (docs/DELIVERY.md sec. 2)." -ForegroundColor Yellow

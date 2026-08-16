@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# S1.1 / S13.7 — the full CI gate. Every check that must pass before a build
+# S1.1 / S13.7  -  the full CI gate. Every check that must pass before a build
 # ships: typecheck, lint (0 warnings), the whole frontend suite, and the
 # static audits: arg/kind parity + the S13 a11y audits (4px grid, clipping,
-# focus-visible, contrast). Rust checks run separately (cargo test / clippy —
+# focus-visible, contrast). Rust checks run separately (cargo test / clippy  - 
 # see docs/RELEASE_PLAN.md). Exits non-zero on the first failure.
 set -euo pipefail
 cd "$(dirname "$0")/.."

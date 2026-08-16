@@ -1,4 +1,4 @@
-# S1.3 — post-build gate for the release exe.
+# S1.3  -  post-build gate for the release exe.
 #   1. Every key Tauri command string must be present in the binary (an exe
 #      built before a command existed is a lie).
 #   2. The exe must be newer than the newest .rs/.ts/.tsx source (stale check).

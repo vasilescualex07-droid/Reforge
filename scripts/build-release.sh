@@ -2,7 +2,7 @@
 # Release build for Reforge.
 #
 # A plain `cargo build --release` does NOT copy bundle resources next to the
-# exe — so ffmpeg.exe (the video import sidecar) never made it to
+# exe  -  so ffmpeg.exe (the video import sidecar) never made it to
 # target/release/, and any shortcut-launched build could not find it. This
 # script guarantees the sidecar ships next to reforge.exe.
 #
@@ -14,7 +14,7 @@ echo "==> Building frontend (dist/)"
 npm run build
 
 echo "==> Building Rust release (this takes a while)"
-# S1.2 — supply the build identity as env vars (build.rs embeds them via
+# S1.2  -  supply the build identity as env vars (build.rs embeds them via
 # rerun-if-env-changed, so dev builds don't recompile on every run).
 REFORGE_BUILD_TS="$(date +%s)" \
 REFORGE_GIT_HASH="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)" \

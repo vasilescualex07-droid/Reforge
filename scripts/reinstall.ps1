@@ -1,4 +1,4 @@
-# S1.4 — one-click rebuild + relaunch loop (would have prevented the stale-exe
+# S1.4  -  one-click rebuild + relaunch loop (would have prevented the stale-exe
 # incident: exe built at 5:30 AM, fixes landed 10:24 AM-12:20 PM, user was
 # still running the old exe).
 #
