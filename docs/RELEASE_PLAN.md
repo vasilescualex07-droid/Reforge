@@ -114,9 +114,10 @@ GitHub-hosted runners, which ours does).
 
 ## Phase 4 — First release (me + owner)
 
-1. Push to `main` → CI runs typecheck/tests → `tauri build` (exe + NSIS + MSI) →
-   SignPath signs → manifest generated → **draft release** `v{run_number}` with
-   `reforge.exe`, `Reforge-Setup.exe`, `*.msi`, `latest.json`.
+1. Tag `v0.1.0` (or trigger the workflow manually) → CI runs typecheck/tests →
+   `tauri build` (exe + NSIS + MSI) → manifest generated → **draft release**
+   tagged with the version, carrying `reforge.exe`, `Reforge-Setup.exe`,
+   `*.msi`, `latest.json`.
 2. Owner **publishes the draft** (deliberate manual gate so a bad build never ships).
 3. Verify:
    - Installer properties → **Digital Signatures** tab shows the publisher name
@@ -141,8 +142,9 @@ GitHub-hosted runners, which ours does).
   GitHub's 1 GB soft recommendation and the 100 MB/file hard limit (ffmpeg is
   98.0 MB — no headroom to grow it). If the repo passes ~1 GB, move media to
   Git LFS. First push needs the postBuffer bump (Phase 1.2).
-- **Draft per push.** Every push to `main` drafts a release; publishing is the
-  go-live action. `v{run_number}` tags stay unique so repeated pushes can't collide.
+- **Builds on demand.** The workflow triggers on a `v*` tag or manual dispatch
+  only — not every push (that used to spawn a 20+ min cold build per commit).
+  Publishing the draft is still the go-live action.
 - **`latest.json` 404s while the release is a draft.** Expected; the channel
   goes live when the draft is published.
 - **SignPath OSS eligibility** requires public repo + GitHub-hosted build. Both

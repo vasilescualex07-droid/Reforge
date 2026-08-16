@@ -1,22 +1,30 @@
 # S12.3 — Release pipeline.
 #
-# On a push to main: npm ci → typecheck + tests → `tauri build` (frontend +
-# release exe + NSIS/MSI bundles) → sign with signtool (when the cert secrets
-# are set) → upload everything to a draft GitHub Release. Publishing the draft
-# is a manual step so a bad build never ships.
+# Triggered only when a release is actually wanted:
+#   - a tag push matching v* (e.g. `git tag v0.1.0 && git push --tags`), or
+#   - manual dispatch (Actions tab → "Run workflow").
+# Pushes to main do NOT build — every-commit builds used to spawn a 20+ min
+# cold compile and a draft release on each push.
+#
+# Flow: npm ci → typecheck + tests → `tauri build` (frontend + release exe +
+# NSIS/MSI bundles) → sign with signtool (when the cert secrets are set) →
+# upload everything to a draft GitHub Release. Publishing the draft is a
+# manual step so a bad build never ships.
 #
 # Secrets to configure (repo → Settings → Secrets and variables → Actions):
 #   REFORGE_CERT_PFX       base64 of the code-signing .pfx (OV/EV for production)
 #   REFORGE_CERT_PASSWORD  PFX password
 #
 # The updater manifest ({"version","url","sha256","notes"}) is generated and
-# attached to the draft release. Point the app's UpdateConfig.manifest_url at
-# the raw manifest URL (see docs/DELIVERY.md) to make the in-app updater work.
+# attached to the draft release as `latest.json`. The app's
+# UpdateConfig.manifest_url points at
+# https://github.com/<owner>/Reforged/releases/latest/download/latest.json
+# (tag-independent, so it keeps working across releases).
 name: release
 
 on:
   push:
-    branches: [main]
+    tags: ['v*']
   workflow_dispatch:
 
 jobs:
@@ -78,7 +86,9 @@ jobs:
         shell: bash
         run: |
           EXE=src-tauri/target/release/reforge.exe
-          VERSION="$("$EXE" --version | awk '{print $2}')"
+          # Version comes from tauri.conf.json (single source of truth) — the
+          # exe has no --version CLI, so never try to read it from the binary.
+          VERSION="$(python -c 'import json; print(json.load(open("src-tauri/tauri.conf.json"))["version"])')"
           SHA256="$(sha256sum "$EXE" | awk '{print $1}')"
           python - "$VERSION" "$SHA256" > /tmp/latest.json <<'EOF'
           import json, sys
@@ -95,7 +105,8 @@ jobs:
       - name: Draft release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
+          # tag pushes use the tag (e.g. v0.1.0); manual runs fall back to v{run_number}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v{0}', github.run_number) }}
           draft: true
           files: |
             src-tauri/target/release/reforge.exe
