@@ -12,9 +12,9 @@ Built with **Tauri 2 + Rust + React + TypeScript + Tailwind**.
 
 ## Download & install
 
-Grab the latest `Reforge-Setup.exe` from the
-[Releases page](https://github.com/vasilescualex07-droid/Reforge/releases) — a per-user
-install, no admin rights needed. In-app, Settings → "Check for updates" polls the
+Grab the latest installer (e.g. `Reforge_0.1.0_x64-setup.exe`) from the
+[Releases page](https://github.com/vasilescualex07-droid/Reforge/releases) — a
+per-user install, no admin rights needed. In-app, Settings → "Check for updates" polls the
 same channel and installs newer versions silently.
 
 > **Note:** releases are currently **unsigned**, so Windows may show

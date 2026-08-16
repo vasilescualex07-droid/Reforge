@@ -35,7 +35,7 @@ $st = $signtool.Source -or $signtool
 $root = Split-Path $PSScriptRoot -Parent
 $targets = @(
     (Join-Path $root "src-tauri\target\release\reforge.exe"),
-    (Join-Path $root "src-tauri\target\release\bundle\nsis\Reforge-Setup.exe"),
+    (Join-Path $root "src-tauri\target\release\bundle\nsis\Reforge_0.1.0_x64-setup.exe"),
     (Join-Path $root "src-tauri\target\release\bundle\msi\Reforge_0.1.0_x64_en-US.msi")
 )
 

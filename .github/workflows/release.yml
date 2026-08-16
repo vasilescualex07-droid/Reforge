@@ -96,17 +96,21 @@ jobs:
           # exe has no --version CLI, so never try to read it from the binary.
           VERSION="$(python -c 'import json; print(json.load(open("src-tauri/tauri.conf.json"))["version"])')"
           SHA256="$(sha256sum "$EXE" | awk '{print $1}')"
-          python - "$VERSION" "$SHA256" > /tmp/latest.json <<'EOF'
+          # Written to the workspace root, NOT /tmp: the release action (Node)
+          # resolves /tmp differently than bash on Windows, which silently
+          # dropped the manifest from the release.
+          python - "$VERSION" "$SHA256" > latest.json <<'EOF'
           import json, sys
           version, sha256 = sys.argv[1], sys.argv[2]
           print(json.dumps({
               "version": version,
-              "url": f"https://github.com/${{ github.repository }}/releases/latest/download/Reforge-Setup.exe",
+              # NSIS installer name carries version + arch (e.g. Reforge_0.1.0_x64-setup.exe)
+              "url": f"https://github.com/${{ github.repository }}/releases/latest/download/Reforge_{version}_x64-setup.exe",
               "sha256": sha256,
               "notes": ["Automated release build."],
           }, indent=2))
           EOF
-          echo "manifest=$(base64 -w0 /tmp/latest.json)" >> "$GITHUB_OUTPUT"
+          echo "manifest=$(base64 -w0 latest.json)" >> "$GITHUB_OUTPUT"
 
       - name: Draft release
         uses: softprops/action-gh-release@v2
@@ -116,7 +120,9 @@ jobs:
           draft: true
           files: |
             src-tauri/target/release/reforge.exe
-            src-tauri/target/release/bundle/nsis/Reforge-Setup.exe
+            src-tauri/target/release/bundle/nsis/*-setup.exe
             src-tauri/target/release/bundle/msi/*.msi
-            /tmp/latest.json
-          fail_on_unmatched_files: false
+            latest.json
+          # Fail loudly: a silently-missing artifact used to ship a release
+          # without the installer and the update manifest.
+          fail_on_unmatched_files: true
