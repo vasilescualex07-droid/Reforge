@@ -27,6 +27,12 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+# softprops/action-gh-release needs write access to contents (releases) —
+# without this the draft step fails with a 403 on repos whose default token
+# permissions are read-only.
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
