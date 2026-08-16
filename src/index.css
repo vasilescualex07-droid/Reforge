@@ -1,0 +1,974 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   REFORGE — Windows 11 Settings Design System
+   Light theme · Segoe UI · 4px grid · ClearType rendering (no custom fonts)
+   ============================================================================ */
+
+@theme {
+  /* ---- Typography Scale (Segoe UI, Win11 Settings) ---- */
+  --font-size-2xs: 0.75rem;    /* 12px — secondary / descriptions */
+  --font-size-xs: 0.875rem;    /* 14px — body / setting labels */
+  --font-size-sm: 0.875rem;    /* 14px — row labels */
+  --font-size-base: 0.875rem;  /* 14px */
+  --font-size-md: 1rem;        /* 16px — widget headers */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px — section headers (bare) */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.75rem;    /* 28px — page title */
+  --font-size-4xl: 2.25rem;    /* 36px — hero numbers */
+
+  /* ---- Font Weights ---- */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ---- Spacing (4px base unit) ---- */
+  --spacing-px: 1px;
+  --spacing-0: 0px;
+  --spacing-0\\.5: 0.125rem;
+  --spacing-1: 0.25rem;
+  --spacing-1\\.5: 0.375rem;
+  --spacing-2: 0.5rem;
+  --spacing-2\\.5: 0.625rem;
+  --spacing-3: 0.75rem;
+  --spacing-3\\.5: 0.875rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 1.75rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* ---- Border Radius (Win11: 4px controls, 8px surfaces) ---- */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* ---- Elevation (subtle, standard Win11) ---- */
+  --shadow-elevation-base: none;
+  --shadow-elevation-raised: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-elevation-dropdown: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-elevation-modal: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+  /* ---- Motion (instant / ≤100ms) ---- */
+  /* S13.2 — Win11 motion spec: 100ms transitions only. */
+  --duration-fast: 100ms;
+  --duration-normal: 100ms;
+  --duration-moderate: 100ms;
+  --duration-slow: 100ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---- Sidebar ---- */
+  --sidebar-width: 18.5rem; /* 296px */
+}
+
+/* ============================================================================
+   Windows 11 Palette
+   ============================================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---- Accent ---- */
+  /* The app overwrites these two at boot from the OS accent (get_theme_state). */
+  --accent: 0, 103, 192;
+  --accent-hex: #0067c0;
+
+  /* ---- Neutral Ramp (light) ---- */
+  --gray-0: #000000;
+  --gray-1: #1a1a1a;
+  --gray-2: #2e2e2e;
+  --gray-3: #e5e5e5;
+  --gray-4: #e5f3ff;
+  --gray-5: #c9c9c9;
+  --gray-6: #a6a6a6;
+  --gray-7: #999999;
+  --gray-8: #6b6b6b;
+  --gray-9: #555555;
+  --gray-10: #767676;
+  --gray-11: #d4d4d4;
+  --gray-12: #ffffff;
+
+  /* ---- Surface Layers ---- */
+  --surface-base: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-overlay: #f3f3f3;
+  --surface-hover: #f3f3f3;
+  --surface-active: #e5e5e5;
+  --surface-selected: #e5f3ff;
+
+  /* ---- Border Layers ---- */
+  --border-subtle: #e5e5e5;
+  --border-default: #d9d9d9;
+  --border-strong: #c9c9c9;
+  --border-accent: #0067c0;
+  --border-focus: #0067c0;
+
+  /* ---- Text Layers (WCAG AA on white) ---- */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-tertiary: #6b6b6b;
+  --text-disabled: #a6a6a6;
+  --text-accent: #0067c0;
+  --text-on-accent: #ffffff;
+
+  /* ---- Status Colors ---- */
+  --status-success: #0f7b0f;
+  --status-success-bg: rgba(15, 123, 15, 0.08);
+  --status-success-border: rgba(15, 123, 15, 0.28);
+  --status-warning: #9d5d00;
+  --status-warning-bg: rgba(157, 93, 0, 0.10);
+  --status-warning-border: rgba(157, 93, 0, 0.30);
+  --status-danger: #c42b1c;
+  --status-danger-bg: rgba(196, 43, 28, 0.08);
+  --status-danger-border: rgba(196, 43, 28, 0.30);
+  --status-info: #0067c0;
+  --status-info-bg: rgba(0, 103, 192, 0.08);
+  --status-info-border: rgba(0, 103, 192, 0.28);
+
+  /* ---- Scrollbar (light) ---- */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.28);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.45);
+}
+
+/* ============================================================================
+   Dark theme — Windows 11 dark. The app sets `data-theme` on <html> at boot
+   from the OS (get_theme_state), so this always follows Windows (Standard B §2);
+   the media query covers the brief pre-JS paint and browser preview. The token
+   list is duplicated deliberately — CSS custom properties can't be shared
+   across a media query. Theme Studio's manual override flips data-theme.
+   ============================================================================ */
+
+/* explicit dark (set by the app), plus pre-JS dark via the media query below */
+[data-theme="dark"] {
+  --gray-0: #ffffff;
+  --gray-1: #e5e5e5;
+  --gray-2: #d1d1d1;
+  --gray-3: #3d3d3d;
+  --gray-4: rgba(var(--accent), 0.22);
+  --gray-5: #4a4a4a;
+  --gray-6: #6b6b6b;
+  --gray-7: #7a7a7a;
+  --gray-8: #9e9e9e;
+  --gray-9: #b8b8b8;
+  --gray-10: #8a8a8a;
+  --gray-11: #333333;
+  --gray-12: #202020;
+
+  --surface-base: #202020;
+  --surface-raised: #2b2b2b;
+  --surface-overlay: #2b2b2b;
+  --surface-hover: #333333;
+  --surface-active: #3d3d3d;
+  --surface-selected: rgba(var(--accent), 0.24);
+
+  --border-subtle: #3d3d3d;
+  --border-default: #4d4d4d;
+  --border-strong: #5c5c5c;
+
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d4;
+  --text-tertiary: #9e9e9e;
+  --text-disabled: #6b6b6b;
+  --text-accent: var(--accent-hex);
+  --text-on-accent: #ffffff;
+
+  --status-success: #6ccb5f;
+  --status-success-bg: rgba(108, 203, 95, 0.14);
+  --status-success-border: rgba(108, 203, 95, 0.40);
+  --status-warning: #fce100;
+  --status-warning-bg: rgba(252, 225, 0, 0.14);
+  --status-warning-border: rgba(252, 225, 0, 0.40);
+  --status-danger: #ff99a4;
+  --status-danger-bg: rgba(255, 153, 164, 0.14);
+  --status-danger-border: rgba(255, 153, 164, 0.40);
+  --status-info: var(--accent-hex);
+  --status-info-bg: rgba(var(--accent), 0.16);
+  --status-info-border: rgba(var(--accent), 0.40);
+
+  --scrollbar-thumb: rgba(255, 255, 255, 0.28);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --gray-0: #ffffff;
+    --gray-1: #e5e5e5;
+    --gray-2: #d1d1d1;
+    --gray-3: #3d3d3d;
+    --gray-4: rgba(var(--accent), 0.22);
+    --gray-5: #4a4a4a;
+    --gray-6: #6b6b6b;
+    --gray-7: #7a7a7a;
+    --gray-8: #9e9e9e;
+    --gray-9: #b8b8b8;
+    --gray-10: #8a8a8a;
+    --gray-11: #333333;
+    --gray-12: #202020;
+
+    --surface-base: #202020;
+    --surface-raised: #2b2b2b;
+    --surface-overlay: #2b2b2b;
+    --surface-hover: #333333;
+    --surface-active: #3d3d3d;
+    --surface-selected: rgba(var(--accent), 0.24);
+
+    --border-subtle: #3d3d3d;
+    --border-default: #4d4d4d;
+    --border-strong: #5c5c5c;
+
+    --text-primary: #ffffff;
+    --text-secondary: #d4d4d4;
+    --text-tertiary: #9e9e9e;
+    --text-disabled: #6b6b6b;
+    --text-accent: var(--accent-hex);
+    --text-on-accent: #ffffff;
+
+    --status-success: #6ccb5f;
+    --status-success-bg: rgba(108, 203, 95, 0.14);
+    --status-success-border: rgba(108, 203, 95, 0.40);
+    --status-warning: #fce100;
+    --status-warning-bg: rgba(252, 225, 0, 0.14);
+    --status-warning-border: rgba(252, 225, 0, 0.40);
+    --status-danger: #ff99a4;
+    --status-danger-bg: rgba(255, 153, 164, 0.14);
+    --status-danger-border: rgba(255, 153, 164, 0.40);
+    --status-info: var(--accent-hex);
+    --status-info-bg: rgba(var(--accent), 0.16);
+    --status-info-border: rgba(var(--accent), 0.40);
+
+    --scrollbar-thumb: rgba(255, 255, 255, 0.28);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  /* ClearType — no custom smoothing */
+}
+
+/* ---- Monospace for data values ---- */
+.font-mono {
+  font-family: "Cascadia Code", "JetBrains Mono", "Consolas", monospace;
+}
+
+/* ============================================================================
+   Page title / subtitle (Win11 Settings)
+   ============================================================================ */
+
+.page-title {
+  font-size: 28px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.page-head {
+  margin-bottom: 24px;
+}
+
+/* ============================================================================
+   Scrollbar — Win11 slim, visible on hover only
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* ============================================================================
+   Focus Ring — 2px accent blue, keyboard navigation
+   ============================================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   Reduced Motion
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   Selection
+   ============================================================================ */
+
+::selection {
+  background: rgba(0, 103, 192, 0.18);
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   Card — Win11 widget: white, 1px #E5E5E5, 8px radius, 16px padding
+   ============================================================================ */
+
+.card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+  transition: border-color var(--duration-fast) var(--ease-in-out-smooth);
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+/* ---- Card: Interactive (clickable cards) ---- */
+.card-interactive {
+  cursor: pointer;
+}
+.card-interactive:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-overlay);
+}
+.card-interactive:active {
+  background: var(--surface-active);
+}
+
+/* ============================================================================
+   Buttons — Win11: 4px radius, 32px tall
+   Primary = accent fill #0067C0 · Secondary = white, 1px outline
+   ============================================================================ */
+
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  height: 32px;
+  min-width: 100px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-in-out-smooth),
+              border-color var(--duration-fast) var(--ease-in-out-smooth);
+}
+
+.btn-primary {
+  background: var(--accent-hex);
+  color: #ffffff;
+  border: 1px solid var(--accent-hex);
+}
+.btn-primary:hover {
+  background: #005fb2;
+  border-color: #005fb2;
+}
+.btn-primary:active {
+  background: #0059a8;
+  border-color: #0059a8;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-ghost {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid #8a8a8a;
+}
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  border-color: #8a8a8a;
+}
+.btn-ghost:active {
+  background: var(--surface-active);
+  border-color: #8a8a8a;
+}
+.btn-ghost:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-danger {
+  background: var(--status-danger);
+  color: #ffffff;
+  border: 1px solid var(--status-danger);
+}
+.btn-danger:hover {
+  background: #b02618;
+  border-color: #b02618;
+}
+.btn-danger:active {
+  background: #a52316;
+  border-color: #a52316;
+}
+.btn-danger:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-sm {
+  height: 28px;
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* ============================================================================
+   Input — Win11 text box
+   ============================================================================ */
+
+.input {
+  width: 100%;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #8a8a8a;
+  background: var(--surface-base);
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-in-out-smooth);
+}
+.input::placeholder {
+  color: var(--text-disabled);
+}
+.input:hover {
+  border-color: #5c5c5c;
+}
+.input:focus {
+  border-color: var(--border-focus);
+}
+
+/* ============================================================================
+   Label
+   ============================================================================ */
+
+.label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* ============================================================================
+   Segment Control — Win11 toggle buttons (gray pill with accent active)
+   ============================================================================ */
+
+.segment {
+  display: inline-flex;
+  border-radius: var(--radius-full);
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-subtle);
+  padding: 2px;
+  gap: 2px;
+}
+
+.segment-btn {
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.75rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all var(--duration-fast) var(--ease-in-out-smooth);
+  white-space: nowrap;
+}
+.segment-btn:hover {
+  color: var(--text-primary);
+}
+.segment-btn.active {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================================================
+   Badge
+   ============================================================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+  padding: 0.125rem 0.5rem;
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+}
+.badge-success {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid var(--status-success-border);
+}
+.badge-warning {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  border: 1px solid var(--status-warning-border);
+}
+.badge-danger {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid var(--status-danger-border);
+}
+.badge-info {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid var(--status-info-border);
+}
+.badge-accent {
+  background: var(--surface-selected);
+  color: var(--text-accent);
+  border: 1px solid rgba(0, 103, 192, 0.28);
+}
+.badge-neutral {
+  background: var(--surface-overlay);
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ============================================================================
+   Tooltip
+   ============================================================================ */
+
+.tooltip {
+  position: relative;
+}
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: #2b2b2b;
+  border: 1px solid #2b2b2b;
+  color: #ffffff;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-in-out-smooth);
+  z-index: 100;
+}
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ============================================================================
+   Divider
+   ============================================================================ */
+
+.divider {
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* ============================================================================
+   Setting rows — Win11 Settings row anatomy
+   64px tall, label left (14px) + description (12px #6B6B6B), control right
+   ============================================================================ */
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 64px;
+  padding: 12px 0;
+}
+.setting-row + .setting-row {
+  border-top: 1px solid var(--border-subtle);
+}
+.setting-row-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.setting-row-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* ============================================================================
+   Section headers — 20px semibold, 32px top / 16px bottom margin
+   ============================================================================ */
+
+.section-title {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.section-title-margin {
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+.section-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* Card (widget) header — 16px semibold */
+.widget-title {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.widget-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* ============================================================================
+   Empty State
+   ============================================================================ */
+
+.empty-state {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   Motion — Fast, linear, no bounce
+   ============================================================================ */
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-slide-up {
+  animation: slideUp var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-slide-down {
+  animation: slideDown var(--duration-normal) var(--ease-out-expo) both;
+}
+.animate-scale-in {
+  animation: scaleIn var(--duration-fast) var(--ease-out-expo) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================================
+   Hover row
+   ============================================================================ */
+
+.hover-row {
+  transition: background var(--duration-fast) var(--ease-in-out-smooth);
+}
+.hover-row:hover {
+  background: var(--surface-hover);
+}
+
+/* ============================================================================
+   Progress — Win11: 4px bar, accent fill; indeterminate sliding segment
+   ============================================================================ */
+
+.progress {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-active);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--accent-hex);
+  transition: width var(--duration-moderate) var(--ease-out-expo);
+}
+
+@keyframes indeterminate-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+.progress-indeterminate {
+  position: relative;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-active);
+  overflow: hidden;
+}
+.progress-indeterminate::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--accent-hex);
+  animation: indeterminate-slide 1.2s var(--ease-in-out-smooth) infinite;
+}
+
+/* ============================================================================
+   Skeleton loading
+   ============================================================================ */
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.skeleton {
+  /* Flat blocks + opacity pulse — no gradient shimmer (Standard B §1). */
+  background: var(--surface-active);
+  animation: skeleton-pulse 1.4s var(--ease-in-out-smooth) infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================================
+   Key-cap chips
+   ============================================================================ */
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-default);
+  background: var(--surface-overlay);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* ============================================================================
+   Select — Win11 combo box
+   ============================================================================ */
+
+select {
+  appearance: none;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #8a8a8a;
+  background-color: var(--surface-base);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding: 0 32px 0 12px !important;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-in-out-smooth);
+}
+select:hover {
+  border-color: #5c5c5c;
+}
+select:focus-visible {
+  border-color: var(--border-focus);
+  outline: 2px solid var(--border-focus);
+  outline-offset: 0;
+}
+select option {
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   Range input — Win11 slider
+   ============================================================================ */
+
+input[type="range"] {
+  appearance: none;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-active);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-hex);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-hex);
+  border: 2px solid #ffffff;
+  cursor: pointer;
+}
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #005fb2;
+}
+
+/* ============================================================================
+   Checkbox — Win11 style
+   ============================================================================ */
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-xs);
+  border: 1px solid #8a8a8a;
+  background: var(--surface-base);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background var(--duration-fast) var(--ease-in-out-smooth),
+              border-color var(--duration-fast) var(--ease-in-out-smooth);
+}
+input[type="checkbox"]:hover {
+  border-color: #5c5c5c;
+}
+input[type="checkbox"]:checked {
+  background: var(--accent-hex);
+  border-color: var(--accent-hex);
+}
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+input[type="checkbox"]:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   Pulse (for live indicators)
+   ============================================================================ */
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.pulse-indicator {
+  position: relative;
+}
+.pulse-indicator::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* ============================================================================
+   Accessibility Mode (simplified)
+   ============================================================================ */
+
+.reforge-simple .card {
+  border-radius: var(--radius-2xl) !important;
+  border-color: var(--border-strong) !important;
+  padding: 1.25rem !important;
+}
+.reforge-simple .btn-primary,
+.reforge-simple .btn-ghost,
+.reforge-simple .btn-danger {
+  height: 40px !important;
+  font-size: 15px !important;
+}
+.reforge-simple nav button {
+  height: 44px !important;
+  font-size: 15px !important;
+}

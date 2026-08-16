@@ -1,0 +1,82 @@
+[package]
+name = "reforge"
+version = "0.1.0"
+description = "Reforge — full-PC makeover app"
+authors = ["you"]
+edition = "2021"
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "reforge_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# `custom-protocol` makes a release build embed `frontendDist` and serve it
+# via the app protocol. Without it, tauri's build script sets `dev = true` and
+# the exe tries to load `devUrl` (localhost:1420), which fails when no Vite
+# dev server is running - the "localhost refused to connect" error from the
+# desktop shortcut.
+# S14 — `default-features = false` drops tauri's `common-controls-v6` feature
+# (a default we never opted into). That feature pulls comctl32's
+# TaskDialogIndirect into every binary; rustc links MSVC test harnesses
+# without an application manifest, so the loader binds the legacy comctl32
+# v5.82 from System32 — which does not export it — and `cargo test` dies at
+# load with 0xc0000139 STATUS_ENTRYPOINT_NOT_FOUND. Without the feature the
+# runtime falls back to MessageBoxW (tauri's supported path for manifest-less
+# contexts) and the import never appears. The release exe keeps tauri's own
+# bundled manifest. The remaining features mirror tauri 2.11's default list
+# minus common-controls-v6.
+tauri = { version = "2", default-features = false, features = [
+  "custom-protocol",
+  "wry",
+  "compression",
+  "dynamic-acl",
+  "x11",
+  "dbus",
+] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+# time::sleep for the overlay close-wait poll (fun_spawn_overlay re-spawn
+# must wait for the old window's async teardown before building).
+tokio = { version = "1", features = ["time"] }
+windows = { version = "0.62", features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_Shell",
+  "Win32_System_Com",
+  "Win32_Security",
+  "Win32_System_Threading",
+  "Win32_System_SystemInformation",
+  "Win32_System_Power",
+  "Win32_System_Memory",
+  "Win32_System_Ole",
+  "Win32_Graphics_Gdi",
+  "Win32_System_DataExchange",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_HiDpi",
+] }
+winreg = "0.55"
+sysinfo = "0.33"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "gif"] }
+walkdir = "2"
+rand = "0.8"
+dirs = "6"
+uuid = { version = "1", features = ["v4"] }
+zip = "2"
+symphonia = { version = "0.5", features = ["mp3", "aac", "ogg", "flac", "wav", "isomp4"] }
+hound = "3"
+lazy_static = "1"
+sha2 = "0.10"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+window-vibrancy = "0.6"
+# Widgets (fun) module — global hotkeys (Boss Key + per-widget rebinds) and
+# base64 for the screen-capture → PNG overlay path.
+tauri-plugin-global-shortcut = "2"
+base64 = "0.22"

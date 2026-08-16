@@ -1,0 +1,105 @@
+# S12.3 — Release pipeline.
+#
+# On a push to main: npm ci → typecheck + tests → `tauri build` (frontend +
+# release exe + NSIS/MSI bundles) → sign with signtool (when the cert secrets
+# are set) → upload everything to a draft GitHub Release. Publishing the draft
+# is a manual step so a bad build never ships.
+#
+# Secrets to configure (repo → Settings → Secrets and variables → Actions):
+#   REFORGE_CERT_PFX       base64 of the code-signing .pfx (OV/EV for production)
+#   REFORGE_CERT_PASSWORD  PFX password
+#
+# The updater manifest ({"version","url","sha256","notes"}) is generated and
+# attached to the draft release. Point the app's UpdateConfig.manifest_url at
+# the raw manifest URL (see docs/DELIVERY.md) to make the in-app updater work.
+name: release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Typecheck + tests
+        run: |
+          npx tsc --noEmit
+          npm test
+
+      # S12.4 — one build, all artifacts: frontend (beforeBuildCommand),
+      # release exe, and the NSIS + MSI installers (bundle.resources ships
+      # ffmpeg.exe inside them). S1.2 build identity comes from env vars.
+      - name: Tauri build (release exe + NSIS + MSI)
+        shell: bash
+        env:
+          REFORGE_BUILD_TS: ${{ github.event.head_commit.timestamp }}
+          REFORGE_GIT_HASH: ${{ github.sha }}
+        run: npx tauri build --bundles nsis,msi
+
+      # The raw exe artifact also needs the ffmpeg sidecar next to it (the
+      # installer bundles it internally, but a portable exe does not).
+      - name: Copy ffmpeg sidecar next to exe
+        shell: bash
+        run: cp src-tauri/resources/bin/ffmpeg.exe src-tauri/target/release/ffmpeg.exe
+
+      # S12.2 — sign exe + installer when the cert secrets are present
+      - name: Sign artifacts
+        shell: pwsh
+        env:
+          REFORGE_CERT_PFX: ${{ secrets.REFORGE_CERT_PFX }}
+          REFORGE_CERT_PASSWORD: ${{ secrets.REFORGE_CERT_PASSWORD }}
+        run: powershell -ExecutionPolicy Bypass -File scripts/sign-release.ps1
+
+      - name: Generate updater manifest
+        id: manifest
+        shell: bash
+        run: |
+          EXE=src-tauri/target/release/reforge.exe
+          VERSION="$("$EXE" --version | awk '{print $2}')"
+          SHA256="$(sha256sum "$EXE" | awk '{print $1}')"
+          python - "$VERSION" "$SHA256" > /tmp/latest.json <<'EOF'
+          import json, sys
+          version, sha256 = sys.argv[1], sys.argv[2]
+          print(json.dumps({
+              "version": version,
+              "url": f"https://github.com/${{ github.repository }}/releases/latest/download/Reforge-Setup.exe",
+              "sha256": sha256,
+              "notes": ["Automated release build."],
+          }, indent=2))
+          EOF
+          echo "manifest=$(base64 -w0 /tmp/latest.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          draft: true
+          files: |
+            src-tauri/target/release/reforge.exe
+            src-tauri/target/release/bundle/nsis/Reforge-Setup.exe
+            src-tauri/target/release/bundle/msi/*.msi
+            /tmp/latest.json
+          fail_on_unmatched_files: false
